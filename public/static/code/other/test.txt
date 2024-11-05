@@ -1,0 +1,301 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+get_ipython().run_line_magic('matplotlib', 'inline')
+plt.show()
+sns.set_theme(color_codes=True)
+
+
+# In[2]:
+
+
+df = pd.read_csv("data/train.csv")
+dftest = pd.read_csv("data/test.csv")
+
+
+# In[3]:
+
+
+df.head(5)
+
+
+# In[4]:
+
+
+df.dtypes
+
+
+# In[5]:
+
+
+df.info()
+df.shape
+
+
+# In[6]:
+
+
+df.duplicated().sum()
+df.drop_duplicates(inplace=True)
+df.shape
+
+
+# In[7]:
+
+
+missing_values = df.isnull().sum()
+missing_values
+
+
+# In[8]:
+
+
+sns.set_theme(style="whitegrid")
+
+
+# In[9]:
+
+
+plt.figure(figsize=(7, 4))
+sns.boxplot(x=df['Annual_Premium'], color="purple")
+plt.title('Distribution of Annual_Premium')
+plt.xlabel('Annual_Premium')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# In[10]:
+
+
+plt.figure(figsize=(10, 6))
+sns.histplot(df['Age'], kde=False, bins=10)
+plt.title('Distribution of Age')
+plt.xlabel('Age')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# In[11]:
+
+
+plt.figure(figsize=(10, 6))
+sns.histplot(df['Region_Code'], kde=False, bins=12)
+plt.title('Distribution of Region_Code')
+plt.xlabel('Region_Code')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# In[12]:
+
+
+plt.figure(figsize=(10, 6))
+sns.histplot(df['Vehicle_Age'], kde=False, bins=10)
+plt.title('Distribution of Vehicle_Age')
+plt.xlabel('Vehicle_Age')
+plt.ylabel('Frequency')
+plt.show()
+
+
+# In[13]:
+
+
+#Checking If training data is Imbalanced
+response_data = df['Response'].value_counts()
+plt.figure(figsize=(6,6))
+fig, ax = plt.subplots()
+ax.pie(response_data, labels = [0,1])
+ax.set_title('Checking Imbalance in Training Data Or Response')
+
+
+# In[73]:
+
+
+# Calculate the correlation matrix
+correlation_matrix = df.corr()
+
+# Plot the heatmap
+plt.figure(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5, vmin=-1, vmax=1)
+plt.title('Feature Correlation Heatmap')
+plt.tight_layout()
+plt.show()
+
+
+# In[14]:
+
+
+df.info()
+print('\n')
+df.head()
+
+
+# In[15]:
+
+
+df['Vehicle_Damages'] = df['Vehicle_Damage'].apply(lambda x : 1 if x == 'Yes' else 0)
+df.drop(['Vehicle_Damage'],axis=1)
+
+
+# In[16]:
+
+
+df['Vehicle_Age'] = df['Vehicle_Age'].astype('category')
+df = pd.get_dummies(df, columns=['Vehicle_Age'])
+df.head()
+
+
+# # df test
+
+# In[17]:
+
+
+dftest['Vehicle_Damages'] = dftest['Vehicle_Damage'].apply(lambda x : 1 if x == 'Yes' else 0)
+dftest.drop(['Vehicle_Damage'],axis=1)
+dftest['Vehicle_Age'] = dftest['Vehicle_Age'].astype('category')
+dftest = pd.get_dummies(dftest, columns=['Vehicle_Age'])
+dftest.head()
+
+
+# In[18]:
+
+
+dftest.shape
+
+
+# In[19]:
+
+
+dftest['Gender'] = dftest['Gender'].astype('category')
+df_test = pd.get_dummies(dftest, columns=['Gender'],drop_first=True)
+
+df['Gender'] = df['Gender'].astype('category')
+df = pd.get_dummies(df, columns=['Gender'],drop_first=True)
+
+
+# In[20]:
+
+
+df = df.drop(['Vehicle_Damage'],axis=1)
+df_test = df_test.drop(['Vehicle_Damage'],axis=1)
+
+
+# In[75]:
+
+
+X_train = df[['Age', 'Region_Code', 'Previously_Insured', 'Annual_Premium', 'Policy_Sales_Channel', 'Vintage', 'Vehicle_Damages', 'Vehicle_Age_1-2 Year','Vehicle_Age_< 1 Year', 'Vehicle_Age_> 2 Years']]
+y_train = df['Response']
+
+X_test = df_test[['Age', 'Region_Code', 'Previously_Insured', 'Annual_Premium', 'Policy_Sales_Channel', 'Vintage', 'Vehicle_Damages', 'Vehicle_Age_1-2 Year','Vehicle_Age_< 1 Year', 'Vehicle_Age_> 2 Years']]
+
+
+# In[77]:
+
+
+from imblearn.over_sampling import SMOTE
+smote = SMOTE()
+X_train_smote, y_train_smote = smote.fit_resample(X_train, y_train)
+print(y_train.value_counts())
+print(y_train_smote.value_counts())
+
+
+# In[78]:
+
+
+X_test.shape
+
+
+# In[79]:
+
+
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train_smote)
+data_scaled = scaler.fit_transform(df)
+inference_scaled = scaler.fit_transform(X_test)
+
+
+# In[80]:
+
+
+print(inference_scaled)
+
+
+# In[81]:
+
+
+from sklearn.model_selection import train_test_split
+x_train, x_validation, y_train, y_validation = train_test_split(X_train_scaled, y_train_smote, test_size=0.3, random_state=42)
+print(x_train.shape, y_train.shape, x_validation.shape, y_validation.shape)
+
+
+# In[82]:
+
+
+from sklearn import metrics
+from sklearn.metrics import *
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import f1_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.linear_model import LogisticRegression
+
+
+# In[83]:
+
+
+from sklearn.model_selection import GridSearchCV
+model = LogisticRegression()
+print(x_train.shape, y_train.shape)
+params = {'penalty': ['l2'],
+          'C': np.logspace(-4, 4, 3),
+          'solver': ['lbfgs']}
+grid_search = GridSearchCV(estimator=model, param_grid=params, cv=5)
+
+
+# In[85]:
+
+
+grid_search.fit(x_train,y_train)
+x_test_pred = grid_search.predict(x_validation) # validation data set 
+y_test_prob = grid_search.predict_proba(x_validation)[:, 1] 
+inference_predict = grid_search.predict(inference_scaled)
+
+print(y_validation.shape)
+b = accuracy_score(y_validation,x_test_pred)*100
+c = precision_score(y_validation,x_test_pred)
+d = recall_score(y_validation,x_test_pred)
+e = roc_auc_score(y_validation, y_test_prob)
+
+print(b)
+print(c)
+print(d)
+print(e)
+
+    
+
+
+# In[86]:
+
+
+print(y_test_prob)
+confusion_matrix(y_validation, x_test_pred)
+
+
+# In[72]:
+
+
+submit=pd.read_csv('data/sample_submission.csv')
+submit['Response']=inference_predict
+submit.to_csv('submission.csv',index=False)
+display(submit)
+

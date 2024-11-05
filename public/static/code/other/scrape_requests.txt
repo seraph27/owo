@@ -1,0 +1,93 @@
+def fetchData(page, keyword):
+    url = "https://grbdef.stpi.narl.org.tw/searcher"
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "ja,en-US;q=0.9,en;q=0.8,ja-JP;q=0.7,zh-TW;q=0.6,zh;q=0.5",
+        "Connection": "keep-alive",
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+        "Origin": "https://www.grb.gov.tw",
+        "Referer": "https://www.grb.gov.tw/",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+        "sec-ch-ua": '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"'
+    }
+
+    data = {
+        "keyword": str(keyword),
+        "queryType": "GRB05",
+        "planYearSt": "82",
+        "planYearEn": "113",
+        "actYearSt": "82",
+        "actYearEn": "113",
+        "nowPage": str(page),
+        "rowsPerPage": "200",
+        "orderType": "SIMILARITY",
+        "codeWiat1": "true",
+        "codeWiat2": "true",
+        "codeWiat3": "true",
+        "techName": "true",
+        "techDesc": "true"
+    }
+
+    try:
+        response = requests.post(url, headers=headers, data=data)
+        response.raise_for_status()    
+    except Exception as err:
+        print(f"Other error occurred: {err}")
+
+    return response.json()
+
+def scrapeByRequests(mx, keyword):
+    data = []
+    page, idx, bad = 1, 1, 0 
+    titles_set = set()
+    limit = mx
+    start_time = time.time()
+
+    while page < limit:
+        print("Page: " + str(page))
+        print("Time elapsed: " + str(time.time()-start_time))
+        
+        try:
+            response = fetchData(page, keyword)
+            results = response.get('obj', [])
+            for result in results:
+                title = result.get('title', '')
+                if title in titles_set:
+                    continue
+                titles_set.add(title)
+
+                curr_data = {}
+                curr_data['id'] = idx
+                idx += 1
+                curr_data['title'] = result.get('title', '')
+                if not result.get('host1NameC', ['']): continue
+                curr_data['info'] = result.get('host1NameC', [''])[0] 
+                if not result.get('keyword', ''): continue
+                curr_data['keyword'] = result.get('keyword', '')
+                data.append(curr_data)
+
+        except Exception as e:
+            print(f"Error fetching data for page {page}: {e}")
+            bad = 1
+            break
+
+        if bad: break
+        page += 1
+
+    with open('requests_test1.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+def main():
+    keyword = "" 
+    url = "https://www.grb.gov.tw/search;keyword={keyword};type=GRB05".format(keyword=keyword)
+    url2 = "https://www.grb.gov.tw/search;keyword=deep%20learning;type=GRB05"
+
+    scrapeByRequests(3373, "")
+
+if __name__ == "__main__":
+    main()

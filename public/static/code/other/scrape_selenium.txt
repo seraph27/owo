@@ -1,0 +1,118 @@
+from bs4 import BeautifulSoup
+import requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from collections import defaultdict
+import json
+import time
+
+#GRB scraper selenium (useless now) 
+def scrape_GRB(url):
+    # Set up the WebDriver
+    service = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=service)
+
+    # Open the URL
+    driver.get(url)
+    # Select the number of results per page
+    try:
+        print('Finding...')
+        select_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'span[_ngcontent-c5] select[_ngcontent-c5]'))
+        )
+        select_element.click()
+        
+        # Wait for the options to be clickable and select the desired option
+        option_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'option[_ngcontent-c5][value="200"]'))
+        )
+        option_element.click()
+        time.sleep(3)  # Wait for the page to load with the new number of results
+    except Exception as e:
+        print(f"Error selecting results per page: {e}")
+        driver.quit()
+        return
+    
+    try:
+        print('Changing year...')
+        select_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'td[_ngcontent-c5] select[formcontrolname="planYearSt"]'))
+        )
+        select_element.click()
+        
+        option_element = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, 'select[formcontrolname="planYearSt"] option[_ngcontent-c5][value="107"]'))
+        )
+        option_element.click()
+        time.sleep(3)  
+    except Exception as e:
+        print(f"Error selecting results per page: {e}")
+        driver.quit()
+        return
+
+    data = []
+    page = 2    
+    limit = 1800
+    idx = 1
+    start_time = time.time()
+    while page < limit:
+        bad = False
+        print("Page: " + str(page-1))
+        print("Time elapsed: " + str(time.time()-start_time))
+        results = driver.find_elements(By.XPATH, "//div[@id='resultList']/ul/li")
+        for result in results:
+            curr_data = {}
+            curr_data['id'] = idx
+            idx+=1
+            try:
+                title = result.find_element(By.CSS_SELECTOR, 'div.conTitle span[_ngcontent-c5]').text
+                curr_data['title'] = title
+                #print(title+'testing')
+            except:
+                curr_data['title'] = ''
+            
+            try: 
+                info = result.find_element(By.CSS_SELECTOR, 'div.conInfo span[_ngcontent-c5]').text
+                info = info.split('計畫主持人：', 1)[1].strip()
+                curr_data['info'] = info
+                #print(info + 'info')
+            except:
+                curr_data['info'] = ''
+
+            try:
+                keyword = result.find_element(By.XPATH, ".//div[contains(text(),'關鍵字：')]").text
+                keyword = keyword.split('關鍵字：', 1)[1].strip()
+                curr_data['keyword'] = keyword
+                #print(keyword + 'keyword')
+            except:
+                curr_data['keyword'] = ''
+
+            data.append(curr_data)
+        attempts = 0
+        while attempts<3:
+            try:
+                xpath_expression = f"//div[@class='paging-ctr']/a/span[contains(text(), '{page}')]"
+                select_element = WebDriverWait(driver, 120).until(
+                    EC.element_to_be_clickable((By.XPATH, xpath_expression))
+                )
+                select_element.click()
+                page+=1
+                time.sleep(1)
+                break
+            except Exception as e:
+                print("Failed to fetch, wait 3 seconds, attempt: " + str(attempts))
+                time.sleep(3)
+                attempts+=1
+                if attempts==3: bad = True
+                continue
+        if bad: 
+            break
+            
+    with open('GRB_papers_final.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+    driver.quit()
