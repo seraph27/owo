@@ -1,0 +1,60 @@
+---
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Container from '@/components/Container.astro'
+import Layout from '@/layouts/Layout.astro'
+
+const sheetId = '1YRglBS3ZPArZ-miCc4VXYE1DaSunEHjf4vZVBJ_u2b8'; 
+const apiKey = 'AIzaSyCMv2W0Ase-dFS1y2RjJSXAxuhOsFIcJHI';
+const values = 'A2:C390'; //change the range to match your sheet
+
+const fetchData = async () => {
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${values}?key=${apiKey}`
+  );
+  const data = await response.json();
+  return data.values; // This returns the rows as arrays
+};
+
+const data = await fetchData();
+console.log(data);
+---
+
+<Layout title="Codeforces" description="A list of recent Codeforces problems.">
+    <Container class="flex flex-col gap-y-6">
+        <Breadcrumbs items={[{ label: 'Tables', icon: 'lucide:receipt' }]} />
+        <Table>
+            <TableCaption>A list of your recent Codeforces problems.</TableCaption>
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[100px]">Date</TableHead>
+                    <TableHead>Problem</TableHead>
+                    <TableHead>Note</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {data.map((entry: string[]) => (
+                    <TableRow key={entry[1]}>
+                        <TableCell className="font-medium">{entry[0]}</TableCell>
+                        <TableCell>{entry[1]}</TableCell>
+                        <TableCell>{entry[2] || "—"}</TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+            <TableFooter>
+                <TableRow>
+                    <TableCell colSpan={3} className="text-right">End of List</TableCell>
+                </TableRow>
+            </TableFooter>
+        </Table>
+    </Container>
+</Layout>

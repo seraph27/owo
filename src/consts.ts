@@ -27,6 +27,8 @@ export const NAV_LINKS: Link[] = [
   { href: '/table', label: 'table' }, 
   { href: '/resources', label: 'resources' },
   { href: '/tags', label: 'tags' },
+  { href: '/authors', label: 'authors' },
+  { href: '/about', label: 'about' },
 ]
 
 export const SOCIAL_LINKS: Link[] = [
