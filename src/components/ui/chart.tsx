@@ -1,9 +1,9 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 import {
-  NameType,
-  Payload,
-  ValueType,
+  type NameType,
+  type Payload,
+  type ValueType,
 } from "recharts/types/component/DefaultTooltipContent"
 
 import { cn } from "@/lib/utils"
