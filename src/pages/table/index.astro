@@ -7,7 +7,7 @@ import { type Problem, columns } from "./columns.tsx"
 
 const sheetId = '1YRglBS3ZPArZ-miCc4VXYE1DaSunEHjf4vZVBJ_u2b8'; 
 const apiKey = 'AIzaSyCMv2W0Ase-dFS1y2RjJSXAxuhOsFIcJHI';
-const values = 'A2:C390'; //change the range to match your sheet
+const values = 'A2:F390'; //change the range to match your sheet
 
 const fetchData = async () => {
   const response = await fetch(
@@ -19,18 +19,24 @@ const fetchData = async () => {
 };
 
 const data = await fetchData();
-const codeforcesData = data.map((entry: string[]) => {
-    return {
-        date: entry[0],
-        problems: entry[1],
-        resources: entry[2],
-    };
-});
+const codeforcesData = data
+    .map((entry: any) => {
+        return {
+            date: entry[0],
+            problems: entry[1],
+            tags: entry[2],
+            isContest: entry[4],
+            resources: entry[5],
+        };
+    })
+
+const filteredData = codeforcesData.filter((entry: any) => entry.isContest === 'FALSE');
+console.log(codeforcesData);
 ---
 
 <Layout title="Codeforces" description="A list of recent Codeforces problems.">
     <Container class="flex flex-col gap-y-6">
         <Breadcrumbs items={[{ label: 'Tables', icon: 'lucide:receipt' }]} />
-        <DataTable client:load columns={columns} data={codeforcesData} />
+        <DataTable client:load columns={columns} data={filteredData} />
     </Container>
 </Layout>

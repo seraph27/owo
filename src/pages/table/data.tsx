@@ -32,6 +32,20 @@ import {
       label: "AtCoder",
       icon: LightningBoltIcon,
     },
-
+    {
+      value: "Luogu",
+      label: "Luogu",
+      icon: LightningBoltIcon,
+    },
+    {
+      value: "Aizu",
+      label: "Aizu",
+      icon: LightningBoltIcon,
+    },
+    {
+      value: "ICPC",
+      label: "ICPC",
+      icon: LightningBoltIcon,
+    },
   ]
   

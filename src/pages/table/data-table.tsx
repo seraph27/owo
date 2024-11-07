@@ -38,11 +38,8 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [isClient, setIsClient] = React.useState(false)
 
@@ -75,30 +72,24 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border border-foreground ">
+      <div className="rounded-md border border-foreground">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : (
-                        isClient ? (
-                          <Button
-                            variant="ghost"
-                            onClick={() => header.column.toggleSorting(header.column.getIsSorted() === 'asc')}
-                          >
-                            {flexRender(header.column.columnDef.header, header.getContext())}
-                            <ArrowUpDown className="ml-2 h-4 w-4" />
-                          </Button>
-                        ) : (
-                          flexRender(header.column.columnDef.header, header.getContext())
-                        )
-                      )}
-                    </TableHead>
-                  )
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : (
+                      <Button
+                        variant="ghost"
+                        onClick={() => header.column.toggleSorting(header.column.getIsSorted() === 'asc')}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -110,10 +101,12 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className='pl-4' key={cell.id}>
+                    <TableCell className="pl-4" key={cell.id}>
                       {isClient ? (
                         flexRender(cell.column.columnDef.cell, cell.getContext())
-                      ) : null }
+                      ) : (
+                        null
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
