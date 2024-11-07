@@ -38,20 +38,7 @@ const DataTableFacetedFilter = <TData, TValue>({
   options,
 }: DataTableFacetedFilterProps<TData, TValue>): JSX.Element => {
   const facets = column?.getFacetedUniqueValues()
-  const [selectedValues, setSelectedValues] = React.useState<Set<string>>(
-    new Set(column?.getFilterValue() as string[])
-  )
-
-  const toggleSelection = (value: string) => {
-    const newSelectedValues = new Set(selectedValues)
-    if (newSelectedValues.has(value)) {
-      newSelectedValues.delete(value)
-    } else {
-      newSelectedValues.add(value)
-    }
-    setSelectedValues(newSelectedValues)
-    column?.setFilterValue(newSelectedValues.size ? Array.from(newSelectedValues) : undefined)
-  }
+  const selectedValues = new Set(column?.getFilterValue() as string[])
 
   return (
     <Popover>
@@ -94,7 +81,7 @@ const DataTableFacetedFilter = <TData, TValue>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0 bg-background" align="start">
+      <PopoverContent className="w-[220px] p-0 bg-background" align="start">
         <Command>
           <CommandInput placeholder="Filter..." />
           <CommandList>
@@ -105,7 +92,17 @@ const DataTableFacetedFilter = <TData, TValue>({
                 return (
                   <CommandItem
                     key={option.value}
-                    onSelect={() => toggleSelection(option.value)}
+                    onSelect={() => {
+                      if (isSelected) {
+                        selectedValues.delete(option.value)
+                      } else {
+                        selectedValues.add(option.value)
+                      }
+                      const filterValues = Array.from(selectedValues)
+                      column?.setFilterValue(
+                        filterValues.length ? filterValues : undefined
+                      )
+                    }}
                   >
                     <div
                       className={cn(
@@ -134,11 +131,8 @@ const DataTableFacetedFilter = <TData, TValue>({
               <>
                 <CommandSeparator />
                 <CommandGroup>
-                  <CommandItem
-                    onSelect={() => {
-                      setSelectedValues(new Set())
-                      column?.setFilterValue(undefined)
-                    }}
+                <CommandItem
+                    onSelect={() => column?.setFilterValue(undefined)}
                     className="justify-center text-center"
                   >
                     Clear filters

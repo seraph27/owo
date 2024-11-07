@@ -1,11 +1,14 @@
-"use client"
+'use client'
 export const prerender = false
 import * as React from 'react'
 import {
   type ColumnDef,
+  type ColumnFiltersState,
   type SortingState,
   flexRender,
   getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
@@ -20,11 +23,23 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu'
+
+import DataTableFacetedFilter from './data-table-faceted-filter'
+import { resources } from './data'
 import { DataTablePagination } from './pagination'
-import { DataTableToolbar } from './data-table-toolbar'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ArrowUpDown } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import { MixerHorizontalIcon, Cross2Icon } from '@radix-ui/react-icons'
 
 interface DataTableProps<TData, TValue> {
   data: TData[]
@@ -55,6 +70,10 @@ export function DataTable<TData, TValue>({
           </Button>
         )
       },
+      cell: ({ row }) => {
+        return <div className="w-26 flex p-2">{row.original.date}</div>
+      },
+      enableHiding: false,
     },
     {
       accessorKey: 'problems',
@@ -70,9 +89,10 @@ export function DataTable<TData, TValue>({
         )
       },
       cell: ({ row }) => {
-        return <div className="w-64 break-all">{row.original.problems}</div>
+        return <div className="w-64 break-all p-2">{row.original.problems}</div>
       },
       filterFn: 'includesString',
+      enableHiding: false,
     },
     {
       accessorKey: 'tags',
@@ -83,7 +103,7 @@ export function DataTable<TData, TValue>({
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
             Tags
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="ml-2 h-4 w-4 p-2" />
           </Button>
         )
       },
@@ -114,24 +134,117 @@ export function DataTable<TData, TValue>({
     },
   ]
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([
+    { id: 'date', desc: true },
+  ])
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  )
+  React.useEffect(() => {
+    const columnToHide = table.getColumn('resources')
+    if (columnToHide) {
+      columnToHide.toggleVisibility(false)
+    }
+  }, [data])
 
   const table = useReactTable({
     data,
     // @ts-expect-error
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
+    onColumnFiltersChange: setColumnFilters,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const isFiltered = table.getState().columnFilters.length > 0
   return (
-    <div className="space-y-4">
-      {/* <DataTableToolbar table={table} /> */}
+    <div>
+      {/* search bar */}
+      <div className="flex items-center justify-between py-4">
+        <div className="flex gap-x-2">
+          <Input
+            placeholder="Filter problems..."
+            value={
+              (table.getColumn('problems')?.getFilterValue() as string) ?? ''
+            }
+            onChange={(event: any) =>
+              table.getColumn('problems')?.setFilterValue(event.target.value)
+            }
+            className="h-8 w-[150px] lg:w-[250px]"
+          />
+          {/*tag filter */}
+          {table.getColumn('resources') && (
+            <DataTableFacetedFilter
+              column={table.getColumn('resources')}
+              title="Resources"
+              options={resources}
+            />
+          )}
+          {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={() => table.resetColumnFilters()}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <Cross2Icon className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+        </div>
+        {/* filter view */}
+        <div className=''>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="ml-auto hidden h-8 lg:flex"
+              >
+                <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+                View
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-[150px] bg-background"
+            >
+              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+
+              {table
+                .getAllColumns()
+                .filter(
+                  (column) =>
+                    typeof column.accessorFn !== 'undefined' &&
+                    column.getCanHide(),
+                )
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      {/* main table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -182,10 +295,9 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="py-4"> 
+      <div className="py-4">
         <DataTablePagination table={table} />
       </div>
-      
     </div>
   )
 }

@@ -22,10 +22,6 @@ import {
   export function DataTablePagination<TData>({
     table,
   }: DataTablePaginationProps<TData>) {
-    React.useEffect(() => {
-      table.setPageSize(15)
-    }
-    , [])
     return (
       <div className="flex items-center justify-evenly px-2">
         <div className="flex items-center space-x-6 lg:space-x-8">
@@ -41,7 +37,7 @@ import {
                 <SelectValue placeholder={table.getState().pagination.pageSize} />
               </SelectTrigger>
               <SelectContent className="bg-background" side="bottom">
-                {[15, 25, 50, 100, 727].map((pageSize) => (
+                {[10, 25, 50, 100, 727].map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
