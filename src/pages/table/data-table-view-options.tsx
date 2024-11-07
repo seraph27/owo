@@ -1,5 +1,5 @@
 "use client"
-
+export const prerender = false
 import React from "react";
 
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
@@ -28,7 +28,7 @@ export function DataTableViewOptions<TData>({
       columnToHide.toggleVisibility(false);
     }
   }, [table]);
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

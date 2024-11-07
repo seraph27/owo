@@ -32,7 +32,7 @@ export interface BadgeProps
 function Badge({ className, variant, showHash = true, ...props }: BadgeProps) {
   return (
     <div className={cn(badgeVariants({ variant }), className)} {...props}>
-      {showHash && <Hash className="size-3 -translate-x-0.5" />}
+      {showHash && <Hash className="size-3 flex-shrink-0 -translate-x-0.5" />}
       {props.children}
     </div>
   )

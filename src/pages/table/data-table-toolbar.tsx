@@ -1,5 +1,5 @@
 "use client"
-
+export const prerender = false
 import { Cross2Icon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { type Table } from "@tanstack/react-table"

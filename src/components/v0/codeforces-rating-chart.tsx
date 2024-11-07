@@ -1,98 +1,107 @@
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Dot } from "recharts"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+  Dot,
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const codeforcesData = [
-  { 
-    date: "2023-01-01", 
+  {
+    date: '2023-01-01',
     rating: 1200,
-    change: "+25",
-    rank: "Pupil",
+    change: '+25',
+    rank: 'Pupil',
     globalRank: 5000,
-    contestName: "Codeforces Round 900 (Div. 3)",
-    contestTime: "Jan/01/2023 17:35"
+    contestName: 'Codeforces Round 900 (Div. 3)',
+    contestTime: 'Jan/01/2023 17:35',
   },
-  { 
-    date: "2023-03-15", 
+  {
+    date: '2023-03-15',
     rating: 1300,
-    change: "+100",
-    rank: "Specialist",
+    change: '+100',
+    rank: 'Specialist',
     globalRank: 4500,
-    contestName: "Codeforces Round 920 (Div. 3)",
-    contestTime: "Mar/15/2023 17:40"
+    contestName: 'Codeforces Round 920 (Div. 3)',
+    contestTime: 'Mar/15/2023 17:40',
   },
-  { 
-    date: "2023-06-01", 
+  {
+    date: '2023-06-01',
     rating: 1400,
-    change: "+100",
-    rank: "Specialist",
+    change: '+100',
+    rank: 'Specialist',
     globalRank: 4000,
-    contestName: "Codeforces Round 940 (Div. 3)",
-    contestTime: "Jun/01/2023 17:35"
+    contestName: 'Codeforces Round 940 (Div. 3)',
+    contestTime: 'Jun/01/2023 17:35',
   },
-  { 
-    date: "2023-08-13", 
+  {
+    date: '2023-08-13',
     rating: 1432,
-    change: "+32",
-    rank: "Specialist",
+    change: '+32',
+    rank: 'Specialist',
     globalRank: 2677,
-    contestName: "Codeforces Round 966 (Div. 3)",
-    contestTime: "Aug/13/2023 17:40"
+    contestName: 'Codeforces Round 966 (Div. 3)',
+    contestTime: 'Aug/13/2023 17:40',
   },
-  { 
-    date: "2023-01-01", 
+  {
+    date: '2023-01-01',
     rating: 1200,
-    change: "+25",
-    rank: "Pupil",
+    change: '+25',
+    rank: 'Pupil',
     globalRank: 5000,
-    contestName: "Codeforces Round 900 (Div. 3)",
-    contestTime: "Jan/01/2023 17:35"
+    contestName: 'Codeforces Round 900 (Div. 3)',
+    contestTime: 'Jan/01/2023 17:35',
   },
-  { 
-    date: "2023-03-15", 
+  {
+    date: '2023-03-15',
     rating: 1300,
-    change: "+100",
-    rank: "Specialist",
+    change: '+100',
+    rank: 'Specialist',
     globalRank: 4500,
-    contestName: "Codeforces Round 920 (Div. 3)",
-    contestTime: "Mar/15/2023 17:40"
+    contestName: 'Codeforces Round 920 (Div. 3)',
+    contestTime: 'Mar/15/2023 17:40',
   },
-  { 
-    date: "2023-06-01", 
+  {
+    date: '2023-06-01',
     rating: 1400,
-    change: "+100",
-    rank: "Specialist",
+    change: '+100',
+    rank: 'Specialist',
     globalRank: 4000,
-    contestName: "Codeforces Round 940 (Div. 3)",
-    contestTime: "Jun/01/2023 17:35"
+    contestName: 'Codeforces Round 940 (Div. 3)',
+    contestTime: 'Jun/01/2023 17:35',
   },
-  { 
-    date: "2023-08-13", 
+  {
+    date: '2023-08-13',
     rating: 1432,
-    change: "+32",
-    rank: "Specialist",
+    change: '+32',
+    rank: 'Specialist',
     globalRank: 2677,
-    contestName: "Codeforces Round 966 (Div. 3)",
-    contestTime: "Aug/13/2023 17:40"
+    contestName: 'Codeforces Round 966 (Div. 3)',
+    contestTime: 'Aug/13/2023 17:40',
   },
 ]
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload;
+    const data = payload[0].payload
     return (
-      <div className="bg-card bg-background text-card-foreground p-4 border rounded shadow-lg">
+      <div className="bg-card text-card-foreground rounded border bg-background p-4 shadow-lg">
         <p className="font-bold">{`${data.rating} (${data.change}), ${data.rank}`}</p>
         <p>{`Rank: ${data.globalRank}`}</p>
         <p>{data.contestName}</p>
         <p>{data.contestTime}</p>
       </div>
-    );
+    )
   }
-  return null;
-};
+  return null
+}
 
 const CustomDot = (props: any) => {
-  const { cx, cy, stroke} = props;
+  const { cx, cy, stroke } = props
 
   return (
     <Dot
@@ -103,8 +112,8 @@ const CustomDot = (props: any) => {
       strokeWidth={2}
       fill="hsl(var(--background))"
     />
-  );
-};
+  )
+}
 
 export function CodeforcesRatingChart() {
   return (
@@ -125,15 +134,20 @@ export function CodeforcesRatingChart() {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="date" 
-                tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', year: '2-digit' })}
+              <XAxis
+                dataKey="date"
+                tickFormatter={(value) =>
+                  new Date(value).toLocaleDateString('en-US', {
+                    month: 'short',
+                    year: '2-digit',
+                  })
+                }
                 height={60}
                 tickMargin={20}
                 angle={-45}
                 textAnchor="end"
               />
-              <YAxis 
+              <YAxis
                 domain={['dataMin - 100', 'dataMax + 100']}
                 tickCount={8}
               />
@@ -144,7 +158,14 @@ export function CodeforcesRatingChart() {
                 stroke="#B19CD9"
                 fill="#B19CD9"
                 fillOpacity={0.2}
-                dot={(props) => <CustomDot {...props} />}
+                dot={(props) => (
+                  <CustomDot
+                    key={props.key}
+                    cx={props.cx}
+                    cy={props.cy}
+                    stroke={props.stroke}
+                  />
+                )}
               />
             </AreaChart>
           </ResponsiveContainer>

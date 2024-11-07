@@ -1,3 +1,5 @@
+"use client"
+export const prerender = false
 import {
     PaperPlaneIcon,
     RocketIcon,

@@ -16,6 +16,7 @@ import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
 import remarkToc from 'remark-toc'
 import sectionize from '@hbsnow/rehype-sectionize'
+import vercel from '@astrojs/vercel/serverless'
 
 import icon from 'astro-icon'
 
@@ -72,4 +73,6 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  output: "hybrid",
+  adapter: vercel(),
 })
