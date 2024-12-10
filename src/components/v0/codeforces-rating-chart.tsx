@@ -194,7 +194,6 @@ export function CodeforcesRatingChart() {
                 <XAxis
                   dataKey="contestTime"
                   scale="time"
-                  type="Date"
                   tickFormatter={(value) =>
                     new Date(value).toLocaleDateString('en-US', {
                       month: 'short',
