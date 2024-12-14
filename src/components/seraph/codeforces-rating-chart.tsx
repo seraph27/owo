@@ -121,8 +121,8 @@ export function CodeforcesRatingChart() {
     { min: 1600, max: 1900, color: 'rgba(170, 170, 255, 0.8)' },
     { min: 1900, max: 2100, color: 'rgba(255, 136, 255, 0.8)' },
     { min: 2100, max: 2300, color: 'rgba(255, 249, 70, 0.8)' },
-    { min: 2300, max: 2400, color: 'rgba(255, 72, 72, 0.8)' },
-    { min: 2400, max: 2600, color: 'rgba(255, 18, 18, 0.8)' },
+    { min: 2300, max: 2400, color: 'rgba(255, 155, 90, 0.8)' },
+    { min: 2400, max: 2600, color: 'rgba(255, 72, 72, 0.8)' },
     { min: 2600, max: 3000, color: 'rgba(255, 18, 18, 0.8)' },
     { min: 3000, max: 4000, color: 'rgba(170, 0, 0, 0.8)' },
     { min: 4000, max: 5000, color: 'rgba(0, 0, 0, 0.8)' },
@@ -146,7 +146,6 @@ export function CodeforcesRatingChart() {
         )
       : 0
 
-  console.log('Min Rating:', minRating, 'Max Rating:', maxRating)
   return (
     <div className="space-y-1">
       <div className="flex max-w-[400px] space-x-1">
@@ -172,10 +171,10 @@ export function CodeforcesRatingChart() {
                   (entry: any) => entry.contestTime >= new Date('2024-01-01'),
                 )}
                 margin={{
-                  top: 10,
-                  right: 30,
+                  top: 0,
+                  right: 10,
                   left: 0,
-                  bottom: 30,
+                  bottom: 20,
                 }}
               >
                 {ratingBands
@@ -208,7 +207,7 @@ export function CodeforcesRatingChart() {
                 <YAxis domain={[minRating, maxRating]} tickCount={100} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area
-                  type="monotone"
+                  type="linear"
                   dataKey="rating"
                   stroke="#B19CD9"
                   fillOpacity={0.05}

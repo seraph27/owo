@@ -1,16 +1,6 @@
 ---
-import BlogCard from '@/components/BlogCard.astro'
-import Container from '@/components/Container.astro'
-import { CodeforcesRatingChart } from '@/components/v0/codeforces-rating-chart'
-import Link from '@/components/Link.astro'
-import { buttonVariants } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { CodeforcesRatingChart } from '@/components/seraph/codeforces-rating-chart'
+import { CodeforcesSubmissionsChart } from '@/components/seraph/codeforces-submissions'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getCollection } from 'astro:content'
@@ -22,9 +12,14 @@ const blog = (await getCollection('blog'))
 ---
 
 <Layout title="Home" description={SITE.DESCRIPTION}>
-  <Container class="flex flex-col gap-y-6">
-    <section class="flex flex-col gap-y-4">
-      <CodeforcesRatingChart client:load/>
-    </section>
-  </Container>
+  <div class="flex justify-center">
+    <div class="grid w-full max-w-6xl grid-cols-1 gap-4 lg:grid-cols-4 mx-12">
+      <div class="col-span-1 flex max-w-fit">
+        <CodeforcesSubmissionsChart client:load />
+      </div>
+      <div class="col-span-3">
+        <CodeforcesRatingChart client:load />
+      </div>
+    </div>
+  </div>
 </Layout>
