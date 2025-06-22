@@ -10,7 +10,7 @@
 </div>
 
 ```c++
-cout << "welcome to my personal blog, featuring competitive programming and web developement!" << "\n;
+std::cout << "welcome to my personal blog, featuring competitive programming and web development!" << '\n';
 ```
 
 ## Technology Stack
