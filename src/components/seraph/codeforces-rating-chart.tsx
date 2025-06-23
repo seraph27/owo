@@ -136,7 +136,7 @@ export function CodeforcesRatingChart({ username }: Props) {
   
   // Filter data to only include entries from 2024 onwards
   const filteredData = codeforcesData.filter(
-    (entry: CodeforcesRatingEntry) => entry.contestTime >= new Date('2024-01-01'),
+    (entry: CodeforcesRatingEntry) => entry.contestTime >= new Date('1999-01-01'),
   )
 
   // Define rating bands and their colors
@@ -145,7 +145,7 @@ export function CodeforcesRatingChart({ username }: Props) {
     { min: 1200, max: 1400, color: 'rgba(119, 255, 119, 0.8)' },
     { min: 1400, max: 1600, color: 'rgba(119, 221, 187, 0.8)' },
     { min: 1600, max: 1900, color: 'rgba(170, 170, 255, 0.8)' },
-    { min: 1900, max: 2100, color: 'rgba(255, 136, 255, 0.8)' },
+    { min: 1900, max: 2100, color: 'rgba(255, 136, 255, 0.9)' },
     { min: 2100, max: 2300, color: 'rgba(255, 249, 70, 0.8)' },
     { min: 2300, max: 2400, color: 'rgba(255, 155, 90, 0.8)' },
     { min: 2400, max: 2600, color: 'rgba(255, 72, 72, 0.8)' },
@@ -204,9 +204,9 @@ export function CodeforcesRatingChart({ username }: Props) {
                 data={filteredData}
                 margin={{
                   top: 0,
-                  right: 10,
+                  right: 0,
                   left: 0,
-                  bottom: 20,
+                  bottom: 0,
                 }}
               >
                 {ratingBands
@@ -234,8 +234,8 @@ export function CodeforcesRatingChart({ username }: Props) {
                   ticks={monthTickValues}
                   tick={{ fontSize: 12 }}
                   height={60}
-                  tickMargin={20}
-                  angle={-45}
+                  tickMargin={10}
+                  angle={-42}
                   textAnchor="end"
                 />
                 <YAxis
