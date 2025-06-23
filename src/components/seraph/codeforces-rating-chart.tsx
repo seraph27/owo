@@ -11,8 +11,6 @@ import {
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 
 export type RatingCategory =
   | 'Newbie'
@@ -113,9 +111,11 @@ const CustomDot = (props: any) => {
   )
 }
 
-export function CodeforcesRatingChart() {
-  const [inputValue, setInputValue] = useState('shiinamashiro_') // Track input text
-  const [username, setUsername] = useState('shiinamashiro_') // Used for fetching
+interface Props {
+  username: string
+}
+
+export function CodeforcesRatingChart({ username }: Props) {
   const [codeforcesData, setCodeforcesData] = useState([] as CodeforcesRatingEntry[])
   const [_, setError] = useState<string | null>(null)
 
@@ -133,16 +133,6 @@ export function CodeforcesRatingChart() {
   useEffect(() => {
     fetchAndSetData(username)
   }, [username])
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value.trim())
-  }
-
-  const handleSubmit = () => {
-    if (inputValue) {
-      setUsername(inputValue)
-    }
-  }
   
   // Filter data to only include entries from 2024 onwards
   const filteredData = codeforcesData.filter(
@@ -203,17 +193,6 @@ export function CodeforcesRatingChart() {
   const monthTickValues = monthTicks.map(d => d.getTime())
   return (
     <div className="space-y-1">
-      <div className="flex max-w-[400px] space-x-1">
-        <Input
-          type="text"
-          placeholder="Enter Codeforces username"
-          value={inputValue}
-          onChange={handleInputChange}
-        />
-        <Button type="submit" onClick={handleSubmit}>
-          Fetch
-        </Button>
-      </div>
       <Card className="w-full max-w-6xl">
         <CardHeader>
           <CardTitle>Codeforces Rating Progress</CardTitle>
