@@ -21,7 +21,7 @@ import {
 
 export function CodeforcesSubmissionsChart() {
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[350px] h-[150px]">
       <CardHeader>
         <CardTitle>Create project</CardTitle>
         <CardDescription>Deploy your new project in one-click.</CardDescription>

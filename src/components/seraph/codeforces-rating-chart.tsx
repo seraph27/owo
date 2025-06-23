@@ -193,12 +193,12 @@ export function CodeforcesRatingChart({ username }: Props) {
   const monthTickValues = monthTicks.map(d => d.getTime())
   return (
     <div className="space-y-1">
-      <Card className="w-full max-w-6xl">
+      <Card className="w-full max-w-6xl bg-secondary">
         <CardHeader>
           <CardTitle>Codeforces Rating Progress</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[400px]">
+          <div className="h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={filteredData}

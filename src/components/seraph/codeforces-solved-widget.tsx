@@ -43,11 +43,11 @@ export function CodeforcesSolvedWidget({ username }: Props) {
   }, [username])
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-[300px] bg-secondary">
       <CardHeader>
         <CardTitle>Problems Solved</CardTitle>
       </CardHeader>
-      <CardContent className="flex h-[120px] items-center justify-center">
+      <CardContent className="flex items-center justify-center">
         {loading ? (
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         ) : solved !== null ? (
