@@ -1,4 +1,4 @@
-![bg](/public/static/images/thumbnails/bg2.png)
+![bg](/public/static/images/thumbnails/bg2.jpg)
 
 <div align="center">
 
