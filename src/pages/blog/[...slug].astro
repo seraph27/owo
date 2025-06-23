@@ -145,8 +145,6 @@ const authors = await parseAuthors(post.data.authors ?? [])
           }
         </div>
       </div>
-
-      <PostNavigation prevPost={prevPost} nextPost={nextPost} />
     </section>
 
     {headings.length > 0 && <TableOfContents headings={headings} />}
