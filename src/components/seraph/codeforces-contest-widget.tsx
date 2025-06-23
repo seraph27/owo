@@ -72,7 +72,9 @@ export function CodeforcesContestWidget({ username }: Props) {
             ) : null}
           </>
         ) : (
-          <p className="text-sm italic text-muted-foreground">Enter handle</p>
+          <p className="text-center text-sm italic text-muted-foreground">
+            Loading
+          </p>
         )}
       </CardContent>
     </Card>

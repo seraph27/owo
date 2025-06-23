@@ -129,7 +129,9 @@ export function CodeforcesLastSolvedWidget({ username }: Props) {
             </p>
           </>
         ) : (
-          <p className="italic text-muted-foreground">Enter handle</p>
+          <p className="text-center text-sm italic text-muted-foreground">
+            Loading
+          </p>
         )}
       </CardContent>
     </Card>

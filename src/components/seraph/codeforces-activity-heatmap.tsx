@@ -17,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { Loader2 } from 'lucide-react'
 
 interface Props {
   username: string
@@ -78,10 +79,10 @@ export function CodeforcesActivityHeatmap({ username }: Props) {
   const colorFor = (count: number) => {
     if (count === 0) return 'bg-muted/60'
     const level = count / maxCount
-    if (level > 0.75) return 'bg-green-600'
-    if (level > 0.5) return 'bg-green-500'
-    if (level > 0.25) return 'bg-green-400'
-    return 'bg-green-300'
+    if (level > 0.75) return 'bg-green-900'
+    if (level > 0.5) return 'bg-green-700'
+    if (level > 0.25) return 'bg-green-500'
+    return 'bg-green-200'
   }
 
   // organize by weeks
@@ -125,11 +126,13 @@ export function CodeforcesActivityHeatmap({ username }: Props) {
       </CardHeader>
       <CardContent>
         {loading ? (
-          <p className="text-sm italic text-muted-foreground">Loading...</p>
+          <div className="flex items-center justify-center">
+            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+          </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto px-12">
             <div
-              className="grid gap-1"
+              className="grid gap-x-1"
               style={{
                 gridTemplateColumns: `repeat(${weeks.length}, minmax(0,1fr))`,
               }}
@@ -144,7 +147,7 @@ export function CodeforcesActivityHeatmap({ username }: Props) {
                             className={`h-3 w-3 rounded ${colorFor(day.count)}`}
                           />
                         </PopoverTrigger>
-                        <PopoverContent className="px-2 py-1 w-auto text-xs bg-background" side="top">
+                        <PopoverContent className="px-1 py-1 w-auto text-xs bg-background" side="top">
                           {day.date}: {day.count}
                         </PopoverContent>
                       </Popover>
