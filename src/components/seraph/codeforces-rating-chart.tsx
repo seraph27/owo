@@ -14,15 +14,48 @@ import { useEffect, useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
-const fetchData = async (username: string) => {
+export type RatingCategory =
+  | 'Newbie'
+  | 'Pupil'
+  | 'Specialist'
+  | 'Expert'
+  | 'Candidate Master'
+  | 'Master'
+  | 'International Master'
+  | 'Grandmaster'
+  | 'International Grandmaster'
+  | 'Legendary Grandmaster'
+
+export interface CodeforcesRatingEntry {
+
+  date: string  
+  /** the new rating after the contest */
+  rating: number
+  /** e.g. "+23", "-15" */
+  change: string
+  /** one of the predefined bands */
+  rank: RatingCategory
+  /** your place in that contest */
+  globalRank: number
+  /** the contest’s human-readable name */
+  contestName: string
+  /** raw Date object for plotting, sorting, etc. */
+  contestTime: Date
+  /** localized timestamp string */
+  contestTimeFormatted: string
+}
+
+const fetchData = async (username: string): Promise<CodeforcesRatingEntry[]> => {
   const query = `https://codeforces.com/api/user.rating?handle=${username}`
   const response = await fetch(query)
   const data = await response.json()
   if (data.status === 'FAILED') {
     throw new Error('Invalid username or no data available.')
   }
-  return data.result.map((entry: any) => {
-    const getRank = (rating: number) => {
+
+  return data.result.map((entry: any): CodeforcesRatingEntry => {
+    const delta = entry.newRating - entry.oldRating
+    const getRank = (rating: number): RatingCategory => {
       if (rating < 1200) return 'Newbie'
       if (rating < 1400) return 'Pupil'
       if (rating < 1600) return 'Specialist'
@@ -34,21 +67,19 @@ const fetchData = async (username: string) => {
       if (rating < 3000) return 'International Grandmaster'
       return 'Legendary Grandmaster'
     }
+
+    const ts = entry.ratingUpdateTimeSeconds * 1000
+    const dateObj = new Date(ts)
+
     return {
-      date: new Date(entry.ratingUpdateTimeSeconds * 1000)
-        .toISOString()
-        .split('T')[0],
+      date: dateObj.toISOString().split('T')[0],
       rating: entry.newRating,
-      change: `${entry.newRating - entry.oldRating > 0 ? '+' : ''}${
-        entry.newRating - entry.oldRating
-      }`,
+      change: `${delta > 0 ? '+' : ''}${delta}`,
       rank: getRank(entry.newRating),
       globalRank: entry.rank,
       contestName: entry.contestName,
-      contestTime: new Date(entry.ratingUpdateTimeSeconds * 1000),
-      contestTimeFormatted: new Date(
-        entry.ratingUpdateTimeSeconds * 1000,
-      ).toLocaleString('en-US'),
+      contestTime: dateObj,
+      contestTimeFormatted: dateObj.toLocaleString('en-US'),
     }
   })
 }
@@ -70,7 +101,6 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 const CustomDot = (props: any) => {
   const { cx, cy, stroke } = props
-
   return (
     <Dot
       cx={cx}
@@ -86,8 +116,8 @@ const CustomDot = (props: any) => {
 export function CodeforcesRatingChart() {
   const [inputValue, setInputValue] = useState('shiinamashiro_') // Track input text
   const [username, setUsername] = useState('shiinamashiro_') // Used for fetching
-  const [codeforcesData, setCodeforcesData] = useState([])
-  const [error, setError] = useState<string | null>(null)
+  const [codeforcesData, setCodeforcesData] = useState([] as CodeforcesRatingEntry[])
+  const [_, setError] = useState<string | null>(null)
 
   const fetchAndSetData = async (username: string) => {
     try {
@@ -113,7 +143,13 @@ export function CodeforcesRatingChart() {
       setUsername(inputValue)
     }
   }
+  
+  // Filter data to only include entries from 2024 onwards
+  const filteredData = codeforcesData.filter(
+    (entry: CodeforcesRatingEntry) => entry.contestTime >= new Date('2024-01-01'),
+  )
 
+  // Define rating bands and their colors
   const ratingBands = [
     { min: 0, max: 1200, color: 'rgba(204, 204, 204, 0.6)' },
     { min: 1200, max: 1400, color: 'rgba(119, 255, 119, 0.8)' },
@@ -128,23 +164,42 @@ export function CodeforcesRatingChart() {
     { min: 4000, max: 5000, color: 'rgba(0, 0, 0, 0.8)' },
   ]
 
+  
+  const ratingBoundaries = [
+    ...ratingBands.map((b) => b.min),
+    ratingBands[ratingBands.length - 1].max,
+  ]
+
   const minRating =
-    codeforcesData.length > 0
-      ? Math.min(
-          ...codeforcesData
-            .filter((entry: any) => entry.contestTime >= new Date('2024-01-01'))
-            .map((d: any) => d.rating),
-        )
+    filteredData.length > 0
+      ? Math.min(...filteredData.map((d: any) => d.rating)) - 200
       : 0
 
   const maxRating =
-    codeforcesData.length > 0
-      ? Math.max(
-          ...codeforcesData
-            .filter((entry: any) => entry.contestTime >= new Date('2024-01-01'))
-            .map((d: any) => d.rating),
-        )
+    filteredData.length > 0
+      ? Math.max(...filteredData.map((d: any) => d.rating)) + 200
       : 0
+  console.log('minRating:', minRating, 'maxRating:', maxRating, filteredData)
+  
+  const monthTicks =
+    filteredData.length > 0
+      ? (() => {
+          const ticks: Date[] = []
+          const start = new Date(filteredData[0].contestTime)
+          start.setDate(1)
+          start.setHours(0, 0, 0, 0)
+          const end = new Date(
+            filteredData[filteredData.length - 1].contestTime,
+          )
+          start.setMonth(start.getMonth() + 1)
+          end.setDate(1)
+          end.setHours(0, 0, 0, 0)
+          for (let d = new Date(start); d <= end; d.setMonth(d.getMonth() + 1)) {
+            ticks.push(new Date(d))
+          }
+          return ticks
+        })()
+      : []
 
   return (
     <div className="space-y-1">
@@ -167,9 +222,7 @@ export function CodeforcesRatingChart() {
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
-                data={codeforcesData.filter(
-                  (entry: any) => entry.contestTime >= new Date('2024-01-01'),
-                )}
+                data={filteredData}
                 margin={{
                   top: 0,
                   right: 10,
@@ -179,13 +232,13 @@ export function CodeforcesRatingChart() {
               >
                 {ratingBands
                   .filter(
-                    (band) => band.min <= maxRating+100 && band.max >= minRating-100,
+                    (band) => band.min <= maxRating && band.max >= minRating,
                   )
                   .map((band, index) => (
                     <ReferenceArea
                       key={index}
-                      y1={Math.max(band.min, minRating-100)}
-                      y2={Math.min(band.max, maxRating+100)}
+                      y1={Math.max(band.min, minRating)}
+                      y2={Math.min(band.max, maxRating)}
                       fill={band.color}
                       ifOverflow="extendDomain"
                     />
@@ -199,12 +252,19 @@ export function CodeforcesRatingChart() {
                       year: '2-digit',
                     })
                   }
+                  ticks={monthTicks}
+                  tick={{ fontSize: 12 }}
                   height={60}
                   tickMargin={20}
                   angle={-45}
                   textAnchor="end"
                 />
-                <YAxis domain={[minRating, maxRating]} tickCount={100} />
+                <YAxis
+                  domain={[minRating, maxRating]}
+                  ticks={ratingBoundaries.filter(
+                    (b) => b >= minRating && b <= maxRating,
+                  )}
+                />
                 <Tooltip content={<CustomTooltip />} />
                 <Area
                   type="linear"
