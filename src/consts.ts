@@ -13,9 +13,9 @@ export type Link = {
 }
 
 export const SITE: Site = {
-  TITLE: 'seraph.dev',
+  TITLE: 'owo',
   DESCRIPTION:
-    'seraph.dev - enjoy the purest form of problem solving.',
+    'seraph.dev - enjoy problem solving.',
   EMAIL: 'ychao@ucsd.edu',
   NUM_POSTS_ON_HOMEPAGE: 3,
   POSTS_PER_PAGE: 3,

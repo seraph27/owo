@@ -102,7 +102,7 @@ export function CodeforcesActivityHeatmap({ username }: Props) {
   }
 
   return (
-    <Card className="w-full max-w-6xl bg-secondary">
+    <Card className="w-full max-w-6xl bg-secondary transition-all duration-300 hover:border-primary hover:shadow-md">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Activity</CardTitle>

@@ -52,7 +52,7 @@ export function CodeforcesContestWidget({ username }: Props) {
   }, [username])
 
   return (
-    <Card className="w-[300px] h-full bg-secondary">
+    <Card className="w-[300px] h-full bg-secondary transition-all duration-300 hover:border-primary hover:shadow-md">
       <CardHeader>
         <CardTitle>Contests Attended</CardTitle>
       </CardHeader>
