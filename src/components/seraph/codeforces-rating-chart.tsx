@@ -200,7 +200,7 @@ export function CodeforcesRatingChart() {
           return ticks
         })()
       : []
-
+  const monthTickValues = monthTicks.map(d => d.getTime())
   return (
     <div className="space-y-1">
       <div className="flex max-w-[400px] space-x-1">
@@ -252,7 +252,7 @@ export function CodeforcesRatingChart() {
                       year: '2-digit',
                     })
                   }
-                  ticks={monthTicks}
+                  ticks={monthTickValues}
                   tick={{ fontSize: 12 }}
                   height={60}
                   tickMargin={20}
