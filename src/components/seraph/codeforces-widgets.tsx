@@ -8,8 +8,8 @@ import { CodeforcesContestWidget } from './codeforces-contest-widget'
 import { CodeforcesActivityHeatmap } from './codeforces-activity-heatmap'
 
 export function CodeforcesWidgets() {
-  const [inputValue, setInputValue] = React.useState('shiinamashiro_')
-  const [username, setUsername] = React.useState('shiinamashiro_')
+  const [inputValue, setInputValue] = React.useState('monoidic')
+  const [username, setUsername] = React.useState('monoidic')
 
   const handleSubmit = () => {
     if (inputValue.trim()) {
