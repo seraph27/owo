@@ -51,7 +51,7 @@ export function CodeforcesSolvedWidget({ username }: Props) {
         {loading ? (
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         ) : solved !== null ? (
-          <p className="animate-in fade-in zoom-in-95 bg-gradient-to-r from-violet-500 to-indigo-500 bg-clip-text text-center text-6xl font-bold text-transparent">
+          <p className="animate-in fade-in zoom-in-95 bg-gradient-to-r from-violet-300 to-indigo-300 bg-clip-text text-center text-6xl font-bold text-transparent">
             {solved}
           </p>
         ) : (
