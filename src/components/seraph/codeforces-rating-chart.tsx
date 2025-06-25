@@ -198,12 +198,12 @@ export function CodeforcesRatingChart({ username }: Props) {
           <CardTitle>Codeforces Rating Progress</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[450px] ">
+          <div className="h-[500px] flex items-center">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart
                 data={filteredData}
                 margin={{
-                  top: 0,
+                  top: 40,
                   right: 0,
                   left: 0,
                   bottom: 0,

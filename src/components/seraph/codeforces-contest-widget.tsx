@@ -65,10 +65,13 @@ export function CodeforcesContestWidget({ username }: Props) {
               {data.count}
             </p>
             {data.lastRank != null && data.lastDelta != null ? (
-              <p className="text-sm text-muted-foreground">
-                Last Rank: {data.lastRank} ({data.lastDelta >= 0 ? '+' : ''}
-                {data.lastDelta})
-              </p>
+              <>
+                <p className="text-sm text-muted-foreground">Last Rank: {data.lastRank}</p>
+                <p className="text-sm text-muted-foreground">
+                  Rating Δ: {data.lastDelta >= 0 ? '+' : ''}
+                  {data.lastDelta}
+                </p>
+              </>
             ) : null}
           </>
         ) : (

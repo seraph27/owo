@@ -6,6 +6,7 @@ import { CodeforcesSolvedWidget } from './codeforces-solved-widget'
 import { CodeforcesLastSolvedWidget } from './codeforces-last-solved-widget'
 import { CodeforcesContestWidget } from './codeforces-contest-widget'
 import { CodeforcesActivityHeatmap } from './codeforces-activity-heatmap'
+import { CodeforcesCurrentRatingWidget } from './codeforces-rating-solved-widget'
 
 export function CodeforcesWidgets() {
   const [inputValue, setInputValue] = React.useState('monoidic')
@@ -30,7 +31,7 @@ export function CodeforcesWidgets() {
     </div>
       <div className="grid w-full max-w-6xl gap-2 grid-cols-1 lg:grid-cols-[1fr_3fr] mx-auto">
         <div className="flex flex-col gap-2 justify-evenly">
-          <CodeforcesSolvedWidget username={username} />
+          <CodeforcesCurrentRatingWidget username={username} />
           <CodeforcesLastSolvedWidget username={username} />
           <CodeforcesContestWidget username={username} />
         </div>
