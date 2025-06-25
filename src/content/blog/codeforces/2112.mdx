@@ -9,7 +9,8 @@ authors: ['seraph']
 
 
 import { ContestProblemStatus } from '@/components/seraph/contest-problem-status'
-import { Katex } from '@/components/ui/katex'
+import Callout from '@/components/seraph/Callout.astro'
+import { BlogImage } from '@/components/seraph/blog-image'
 
 <ContestProblemStatus
   solved={['A', 'B', 'C']}
@@ -18,8 +19,29 @@ import { Katex } from '@/components/ui/katex'
   contestId={2112}
 />
 
-## Problem A
+---
+```math
+\begin{cases}
+x &\equiv a_1 \pmod{n_1} \\ 
+x &\equiv a_2 \pmod{n_2} \\ 
+\vdots \\ 
+x &\equiv a_k \pmod{n_k}
+\end{cases}
+```
 
+<Callout variant="observation" title="Modulus">
+Recall that the *modulus* is the remainder of [Euclidian division](https://en.wikipedia.org/wiki/Euclidean_division) (division with remainder) of one number by another. For example, $$2 = 12 \pmod{5}$$.
+
+However, this is different from the **congruence modulo** relation, represented by the congruence symbol $$\equiv$$ and often expressed as $$a \equiv b \pmod{m}$$. When two numbers $$a$$ and $$b$$ are congruent modulo $$m$$, it means that:
+
+1. $$a$$ and $$b$$ have the same remainder when divided by $$m$$
+2. $$a - b$$ is divisible by $$m$$ (i.e. $$m \mid (a - b)$$)
+3. There is an integer $$k$$ such that $$a = km + b$$
+
+As such, $$12 \equiv 2 \pmod{5}$$ is true, but $$12 = 2 \pmod{5}$$ is obviously false.
+</Callout>
+## Problem Aif 
+![Source Code Graphical Visualization](bg.jpg)
 Writeup coming soon.
 
 ```cpp title="a.cpp" showLineNumbers"
@@ -43,35 +65,3 @@ Writeup coming soon.
 int solve() {
     vector<int> a = {1, 2, 3, 4};
     // ... complicated logic
-    int ans = accumulate(a.begin(), a.end(), 0);
-    cout << ans << "\n";
-    return 0;
-}
-```
-
-## Problem C
-
-Writeup coming soon.
-
-```cpp title="c.cpp" showLineNumbers focus="5-8"
-struct Node {
-    int value;
-    Node* next;
-};
-
-// building a simple linked list
-Node* head = nullptr;
-```
-
-## Problem D
-
-Writeup coming soon.
-
-```cpp title="d.cpp" showLineNumbers
-int dfs(int v) {
-    // recursion on tree
-    for (int u : g[v])
-        dfs(u);
-    return 0;
-}
-```
