@@ -9,31 +9,58 @@ authors: ['seraph']
 
 
 import { ContestProblemStatus } from '@/components/seraph/contest-problem-status'
+import { Katex } from '@/components/ui/katex'
 
-<ContestProblemStatus solved={['A', 'B', 'C']} failed={['D']} count={6} />
+<ContestProblemStatus
+  solved={['A', 'B', 'C']}
+  failed={['D']}
+  count={6}
+  contestId={2112}
+/>
 
 ## Problem A
 
 Writeup coming soon.
 
-```cpp title="a.cpp" showLineNumbers
-// Solution for Problem A
+```cpp title="a.cpp" showLineNumbers"
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    // some logic
+    cout << n << endl;
+    return 0;
+}
 ```
 
 ## Problem B
 
 Writeup coming soon.
 
-```cpp title="b.cpp" showLineNumbers
-// Solution for Problem B
+```cpp title="b.cpp" showLineNumbers focus="3-6"
+int solve() {
+    vector<int> a = {1, 2, 3, 4};
+    // ... complicated logic
+    int ans = accumulate(a.begin(), a.end(), 0);
+    cout << ans << "\n";
+    return 0;
+}
 ```
 
 ## Problem C
 
 Writeup coming soon.
 
-```cpp title="c.cpp" showLineNumbers
-// Solution for Problem C
+```cpp title="c.cpp" showLineNumbers focus="5-8"
+struct Node {
+    int value;
+    Node* next;
+};
+
+// building a simple linked list
+Node* head = nullptr;
 ```
 
 ## Problem D
@@ -41,21 +68,10 @@ Writeup coming soon.
 Writeup coming soon.
 
 ```cpp title="d.cpp" showLineNumbers
-// Solution for Problem D
-```
-
-## Problem E
-
-Writeup coming soon.
-
-```cpp title="e.cpp" showLineNumbers
-// Solution for Problem E
-```
-
-## Problem F
-
-Writeup coming soon.
-
-```cpp title="f.cpp" showLineNumbers
-// Solution for Problem F
+int dfs(int v) {
+    // recursion on tree
+    for (int u : g[v])
+        dfs(u);
+    return 0;
+}
 ```
