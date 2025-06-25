@@ -74,6 +74,7 @@ export function CodeforcesLastSolvedWidget({ username }: Props) {
     <Card className="w-[300px] h-full bg-secondary transition-all duration-300 hover:border-primary hover:shadow-md">
       <CardHeader>
         <CardTitle className="text-base">
+          Last Solved<br /><br />
           {lastSolved ? (
             <a
               href={problemLink}
@@ -84,7 +85,7 @@ export function CodeforcesLastSolvedWidget({ username }: Props) {
               {lastSolved.index}. {lastSolved.name} (Round {lastSolved.contestId}) 
             </a>
           ) : (
-            "Last Solved Problem"
+            "N/A"
           )}
         </CardTitle>
       </CardHeader>

@@ -6,7 +6,7 @@ import { CodeforcesSolvedWidget } from './codeforces-solved-widget'
 import { CodeforcesLastSolvedWidget } from './codeforces-last-solved-widget'
 import { CodeforcesContestWidget } from './codeforces-contest-widget'
 import { CodeforcesActivityHeatmap } from './codeforces-activity-heatmap'
-import { CodeforcesCurrentRatingWidget } from './codeforces-rating-solved-widget'
+import { CodeforcesCurrentRatingWidget } from './codeforces-rating-problems-widget'
 
 export function CodeforcesWidgets() {
   const [inputValue, setInputValue] = React.useState('monoidic')

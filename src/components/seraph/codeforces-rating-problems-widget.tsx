@@ -72,7 +72,7 @@ export function CodeforcesCurrentRatingWidget({ username }: Props) {
   return (
     <Card className="w-[300px] h-full bg-secondary transition-all duration-300 pb-2 hover:border-primary hover:shadow-md">
       <CardHeader>
-        <CardTitle>Rating &amp; Solved</CardTitle>
+        <CardTitle>Rating &amp; Problems</CardTitle>
       </CardHeader>
       <CardContent className="relative h-28 flex items-center justify-center">
         {loading ? (
