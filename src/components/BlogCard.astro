@@ -93,7 +93,6 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
           <div class="flex flex-wrap gap-2">
             {entry.data.tags.map((tag) => (
               <Badge variant="secondary" className="flex items-center gap-x-1">
-                <Icon name="lucide:hash" class="size-3" />
                 {tag}
               </Badge>
             ))}

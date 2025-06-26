@@ -10,8 +10,7 @@
 </div>
 
 ```c++
-std::cout << "Competitive Programmer Stat Visualizer and Editorials" << '\n';
-```
+std::cout << "Competitive Programming Stat Visualizer, Editorial and Guide" << '\n'
 
 ## Technology Stack
 

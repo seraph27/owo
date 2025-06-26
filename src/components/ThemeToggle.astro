@@ -27,10 +27,7 @@ import { Icon } from 'astro-icon/components'
     if (['dark', 'light'].includes(localStorageTheme)) {
       return localStorageTheme
     }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
-    }
-    return 'light'
+    return 'dark'
   })()
 
   document.documentElement.setAttribute('data-theme', theme)

@@ -123,7 +123,6 @@ export function CodeforcesRatingChart({ username }: Props) {
     try {
       const data = await fetchData(username)
       setCodeforcesData(data)
-      console.log(codeforcesData)
       setError(null)
     } catch (err: any) {
       setError(err.message)
@@ -169,8 +168,7 @@ export function CodeforcesRatingChart({ username }: Props) {
     filteredData.length > 0
       ? Math.max(...filteredData.map((d: any) => d.rating)) + 200
       : 0
-  console.log('minRating:', minRating, 'maxRating:', maxRating, filteredData)
-  
+
   const monthTicks =
     filteredData.length > 0
       ? (() => {

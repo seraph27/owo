@@ -3,7 +3,7 @@ import Link from '@/components/Link.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
 import { Image } from 'astro:assets'
-import logo from '../../public/static/logo.svg'
+import logo from '../../public/static/logo4.png'
 ---
 
 <header
@@ -11,13 +11,13 @@ import logo from '../../public/static/logo.svg'
   transition:persist
 >
   <div
-    class="mx-auto flex max-w-screen-lg items-center justify-between gap-4 px-4 py-3"
+    class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3"
   >
     <Link
       href="/"
       class="flex flex-shrink-0 items-center gap-2 text-xl font-semibold transition-colors duration-300 hover:text-purple-200"
     >
-      <Image src={logo} alt="Logo" class="size-8" />
+      <Image src={logo} alt="Logo" class="size-10" />
       <span class="hidden h-full text-lg font-medium min-[300px]:block"
         >{SITE.title}</span
       >
