@@ -1,0 +1,66 @@
+---
+title: 'Educational Codeforces Round 180'
+description: '(Rated for Div. 2)'
+date: '2025-6-23'
+tags: ['competitive programming', 'c++', 'codeforces']
+image: './bg.jpg'
+authors: ['seraph']
+---
+
+
+import { ContestProblemStatus } from '@/components/seraph/contest-problem-status'
+import Callout from '@/components/Callout.astro'
+
+<ContestProblemStatus
+  solved={['A', 'B', 'C']}
+  failed={['D']}
+  count={6}
+  contestId={2112}
+/>
+
+---
+```math
+\begin{cases}
+x &\equiv a_1 \pmod{n_1} \\ 
+x &\equiv a_2 \pmod{n_2} \\ 
+\vdots \\ 
+x &\equiv a_k \pmod{n_k}
+\end{cases}
+```
+
+<Callout variant="observation" title="Modulus">
+Recall that the *modulus* is the remainder of [Euclidian division](https://en.wikipedia.org/wiki/Euclidean_division) (division with remainder) of one number by another. For example, $$2 = 12 \pmod{5}$$.
+
+However, this is different from the **congruence modulo** relation, represented by the congruence symbol $$\equiv$$ and often expressed as $$a \equiv b \pmod{m}$$. When two numbers $$a$$ and $$b$$ are congruent modulo $$m$$, it means that:
+
+1. $$a$$ and $$b$$ have the same remainder when divided by $$m$$
+2. $$a - b$$ is divisible by $$m$$ (i.e. $$m \mid (a - b)$$)
+3. There is an integer $$k$$ such that $$a = km + b$$
+
+As such, $$12 \equiv 2 \pmod{5}$$ is true, but $$12 = 2 \pmod{5}$$ is obviously false.
+</Callout>
+## Problem Aif 
+![Source Code Graphical Visualization](bg.jpg)
+Writeup coming soon.
+
+```cpp title="a.cpp" showLineNumbers"
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    // some logic
+    cout << n << endl;
+    return 0;
+}
+```
+
+## Problem B
+
+Writeup coming soon.
+
+```cpp title="b.cpp" showLineNumbers focus="3-6"
+int solve() {
+    vector<int> a = {1, 2, 3, 4};
+    // ... complicated logic

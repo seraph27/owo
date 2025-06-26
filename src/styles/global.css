@@ -4,10 +4,10 @@
 
 @theme inline {
   --font-sans:
-    Geist, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'JetBrains Mono', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono:
-    Geist Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'JetBrains Mono', 'Ubuntu Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
 
   --color-background: var(--background);
@@ -36,51 +36,59 @@
 }
 
 @font-face {
-  font-family: 'Geist';
-  src: url('/fonts/GeistVF.woff2') format('woff2-variations');
+  font-family: 'Ubuntu Mono';
+  src: url('/fonts/UbuntuMono-Regular.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/GeistMonoVF.woff2') format('woff2-variations');
+  font-family: 'Ubuntu Mono Bold';
+  src: url('/fonts/UbuntuMono-Bold.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/JetBrainsMono-Medium.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: oklch(0.976 0.013 297.594);
+  --foreground: oklch(0.050 0.000 297.816);
+  --primary: oklch(0.139 0.009 297.318);
+  --primary-foreground: oklch(0.926 0.000 297.823);
+  --secondary: oklch(0.963 0.000 297.821);
+  --secondary-foreground: oklch(0.218 0.002 297.639);
+  --muted: oklch(0.925 0.001 297.800);
+  --muted-foreground: oklch(0.511 0.003 297.712);
+  --accent: oklch(0.963 0.000 297.821);
+  --accent-foreground: oklch(0.218 0.002 297.639);
+  --destructive: oklch(0.637 0.208 25.326);
+  --border: oklch(0.913 0.005 297.722);
+  --ring: oklch(0.139 0.009 297.318);
 }
 
 [data-theme='dark'] {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.556 0 0);
+  --background: oklch(0.134 0.014 313.482);
+  --foreground: oklch(0.979 0.001 312.981);
+  --primary: oklch(0.497 0.162 310.242);
+  --primary-foreground: oklch(0.979 0.001 312.981);
+  --secondary: oklch(0.184 0.035 311.634);
+  --secondary-foreground: oklch(0.979 0.001 312.981);
+  --muted: oklch(0.240 0.031 312.088);
+  --muted-foreground: oklch(0.628 0.017 312.804);
+  --accent: oklch(0.240 0.031 312.088);
+  --accent-foreground: oklch(0.979 0.001 312.981);
+  --destructive: oklch(0.396 0.133 25.721);
+  --border: oklch(0.240 0.031 312.088);
+  --ring: oklch(0.497 0.162 310.242);
 }
 
 @layer base {
