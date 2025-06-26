@@ -11,6 +11,8 @@ import {
 } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 export type RatingCategory =
   | 'Newbie'
@@ -116,22 +118,20 @@ interface Props {
 }
 
 export function CodeforcesRatingChart({ username }: Props) {
-  const [codeforcesData, setCodeforcesData] = useState([] as CodeforcesRatingEntry[])
-  const [_, setError] = useState<string | null>(null)
+  const { data, loading } = useCachedFetch<CodeforcesRatingEntry[]>(
+    `cf-rating-${username}`,
+    () => fetchData(username),
+    { ttl: 30 * 1000, retries: 3 },
+  )
 
-  const fetchAndSetData = async (username: string) => {
-    try {
-      const data = await fetchData(username)
-      setCodeforcesData(data)
-      setError(null)
-    } catch (err: any) {
-      setError(err.message)
-      setCodeforcesData([])
-    }
-  }
-  useEffect(() => {
-    fetchAndSetData(username)
-  }, [username])
+  const codeforcesData = useMemo(
+    () =>
+      (data ?? []).map((e : any) => ({
+        ...e,
+        contestTime: new Date(e.contestTime),
+      })),
+    [data],
+  )
   
   // Filter data to only include entries from 2024 onwards
   const filteredData = codeforcesData.filter(

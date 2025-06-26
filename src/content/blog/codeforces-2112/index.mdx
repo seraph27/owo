@@ -11,6 +11,8 @@ authors: ['seraph']
 import { ContestProblemStatus } from '@/components/seraph/contest-problem-status'
 import Callout from '@/components/Callout.astro'
 
+---
+
 <ContestProblemStatus
   solved={['A', 'B', 'C']}
   failed={['D']}
@@ -28,31 +30,26 @@ x &\equiv a_k \pmod{n_k}
 \end{cases}
 ```
 
-<Callout variant="observation" title="Modulus">
-Recall that the *modulus* is the remainder of [Euclidian division](https://en.wikipedia.org/wiki/Euclidean_division) (division with remainder) of one number by another. For example, $$2 = 12 \pmod{5}$$.
-
-However, this is different from the **congruence modulo** relation, represented by the congruence symbol $$\equiv$$ and often expressed as $$a \equiv b \pmod{m}$$. When two numbers $$a$$ and $$b$$ are congruent modulo $$m$$, it means that:
-
-1. $$a$$ and $$b$$ have the same remainder when divided by $$m$$
-2. $$a - b$$ is divisible by $$m$$ (i.e. $$m \mid (a - b)$$)
-3. There is an integer $$k$$ such that $$a = km + b$$
-
-As such, $$12 \equiv 2 \pmod{5}$$ is true, but $$12 = 2 \pmod{5}$$ is obviously false.
+## Problem A
+<Callout variant="observation">
+If $$x \le a \le y$$ or $$y \le a \le x$$, then Bob might lose, because the prize could show up on the "opposite side" of Alice. 
+In other words, if both $$x$$ and $$y$$ are on the same side of $$a$$, then Bob can always win by choosing the side that contains the prize.
 </Callout>
-## Problem Aif 
-![Source Code Graphical Visualization](bg.jpg)
-Writeup coming soon.
+
+That's the only observation needed. The time complexity is $$O(1)$$.
 
 ```cpp title="a.cpp" showLineNumbers"
-#include <bits/stdc++.h>
-using namespace std;
-
-int main() {
-    int n;
-    cin >> n;
-    // some logic
-    cout << n << endl;
-    return 0;
+void shiina_mashiro() {
+    int a, b, c; cin >> a >> b >> c;
+    if(a < b && a < c) {
+        cout << "Yes" << nl;
+        return;
+    }
+    if(a > b && a > c) {
+        cout << "Yes" << nl;
+        return;
+    }
+    cout << "No" << nl;
 }
 ```
 

@@ -1,12 +1,8 @@
-import * as React from "react";
-import { Loader2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import * as React from 'react'
+import { Loader2 } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 interface Props {
   username: string;
@@ -22,46 +18,35 @@ interface LastSolved {
 }
 
 export function CodeforcesLastSolvedWidget({ username }: Props) {
-  const [lastSolved, setLastSolved] = React.useState<LastSolved | null>(null);
-  const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    if (!username) {
-      setLastSolved(null);
-      return;
+  const fetcher = React.useCallback(async () => {
+    if (!username) throw new Error('no username')
+    const res = await fetch(
+      `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100`,
+    )
+    const data = await res.json()
+    if (data.status !== 'OK') {
+      throw new Error('failed')
     }
-    const fetchLastSolved = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100`
-        );
-        const data = await res.json();
-        if (data.status !== "OK") {
-          setLastSolved(null);
-          return;
-        }
-        const sub = data.result.find((s: any) => s.verdict === "OK");
-        if (!sub) {
-          setLastSolved(null);
-          return;
-        }
-        setLastSolved({
-          name: sub.problem.name,
-          rating: sub.problem.rating,
-          tags: sub.problem.tags ?? [],
-          contestId: sub.problem.contestId,
-          index: sub.problem.index,
-          submissionId: sub.id,
-        });
-      } catch {
-        setLastSolved(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchLastSolved();
-  }, [username]);
+    const sub = data.result.find((s: any) => s.verdict === 'OK')
+    if (!sub) {
+      throw new Error('no solved')
+    }
+    const payload: LastSolved = {
+      name: sub.problem.name,
+      rating: sub.problem.rating,
+      tags: sub.problem.tags ?? [],
+      contestId: sub.problem.contestId,
+      index: sub.problem.index,
+      submissionId: sub.id,
+    }
+    return payload
+  }, [username])
+
+  const { data: lastSolved, loading } = useCachedFetch<LastSolved>(
+    `cf-last-${username}`,
+    fetcher,
+    { ttl: 30 * 1000, retries: 3 },
+  )
 
   const problemLink = lastSolved
     ? `https://codeforces.com/problemset/problem/${lastSolved.contestId}/${lastSolved.index}`

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 interface Props {
   username: string
@@ -13,54 +14,44 @@ interface StatsInfo {
 }
 
 export function CodeforcesCurrentRatingWidget({ username }: Props) {
-  const [data, setData] = React.useState<StatsInfo | null>(null)
-  const [loading, setLoading] = React.useState(false)
-  const [showRating, setShowRating] = React.useState(true)
-
-  React.useEffect(() => {
-    if (!username) {
-      setData(null)
-      return
+  const fetcher = React.useCallback(async () => {
+    if (!username) throw new Error('no username')
+    const [infoRes, solvedRes] = await Promise.all([
+      fetch(`https://codeforces.com/api/user.info?handles=${username}`),
+      fetch(
+        `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
+      ),
+    ])
+    const infoJson = await infoRes.json()
+    const solvedJson = await solvedRes.json()
+    if (
+      infoJson.status !== 'OK' ||
+      infoJson.result.length === 0 ||
+      solvedJson.status !== 'OK'
+    ) {
+      throw new Error('invalid')
     }
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const [infoRes, solvedRes] = await Promise.all([
-          fetch(`https://codeforces.com/api/user.info?handles=${username}`),
-          fetch(
-            `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
-          ),
-        ])
-        const infoJson = await infoRes.json()
-        const solvedJson = await solvedRes.json()
-        if (
-          infoJson.status !== 'OK' ||
-          infoJson.result.length === 0 ||
-          solvedJson.status !== 'OK'
-        ) {
-          setData(null)
-          return
-        }
-        const solvedSet = new Set<string>()
-        for (const sub of solvedJson.result) {
-          if (sub.verdict === 'OK') {
-            solvedSet.add(`${sub.problem.contestId}-${sub.problem.index}`)
-          }
-        }
-        const info = infoJson.result[0]
-        setData({
-          rating: info.rating,
-          rank: info.rank,
-          solved: solvedSet.size,
-        })
-      } catch {
-        setData(null)
-      } finally {
-        setLoading(false)
+    const solvedSet = new Set<string>()
+    for (const sub of solvedJson.result) {
+      if (sub.verdict === 'OK') {
+        solvedSet.add(`${sub.problem.contestId}-${sub.problem.index}`)
       }
     }
-    fetchData()
+    const info = infoJson.result[0]
+    const payload: StatsInfo = {
+      rating: info.rating,
+      rank: info.rank,
+      solved: solvedSet.size,
+    }
+    return payload
   }, [username])
+
+  const { data, loading } = useCachedFetch(
+    `cf-stats-${username}`,
+    fetcher,
+    { ttl: 30 * 1000, retries: 3 },
+  )
+  const [showRating, setShowRating] = React.useState(true)
 
   React.useEffect(() => {
     const id = setInterval(() => {

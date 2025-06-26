@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 interface Props {
   username: string
@@ -13,43 +14,34 @@ interface ContestInfo {
 }
 
 export function CodeforcesContestWidget({ username }: Props) {
-  const [data, setData] = React.useState<ContestInfo | null>(null)
-  const [loading, setLoading] = React.useState(false)
-
-  React.useEffect(() => {
-    if (!username) {
-      setData(null)
-      return
+  const fetcher = React.useCallback(async () => {
+    if (!username) throw new Error('no username')
+    const res = await fetch(
+      `https://codeforces.com/api/user.rating?handle=${username}`,
+    )
+    const json = await res.json()
+    if (json.status !== 'OK') {
+      throw new Error('failed')
     }
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const res = await fetch(
-          `https://codeforces.com/api/user.rating?handle=${username}`,
-        )
-        const json = await res.json()
-        if (json.status !== 'OK') {
-          setData(null)
-          return
-        }
-        const entries = json.result
-        const count = entries.length
-        let lastRank: number | undefined
-        let lastDelta: number | undefined
-        if (count > 0) {
-          const last = entries[count - 1]
-          lastRank = last.rank
-          lastDelta = last.newRating - last.oldRating
-        }
-        setData({ count, lastRank, lastDelta })
-      } catch {
-        setData(null)
-      } finally {
-        setLoading(false)
-      }
+    const entries = json.result
+    const count = entries.length
+    let lastRank: number | undefined
+    let lastDelta: number | undefined
+    if (count > 0) {
+      const last = entries[count - 1]
+      lastRank = last.rank
+      lastDelta = last.newRating - last.oldRating
     }
-    fetchData()
+    const payload: ContestInfo = { count, lastRank, lastDelta }
+    return payload
   }, [username])
+
+  const { data, loading } = useCachedFetch<ContestInfo>(
+    `cf-contest-${username}`,
+    fetcher,
+    { ttl: 30 * 1000, retries: 3 },
+  )
+
 
   return (
     <Card className="w-[300px] h-full bg-secondary transition-all duration-300 hover:border-primary hover:shadow-md">

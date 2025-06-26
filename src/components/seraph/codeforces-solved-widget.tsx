@@ -1,46 +1,36 @@
 import * as React from 'react'
 import { Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 interface Props {
   username: string
 }
 
 export function CodeforcesSolvedWidget({ username }: Props) {
-  const [solved, setSolved] = React.useState<number | null>(null)
-  const [loading, setLoading] = React.useState(false)
-
-  React.useEffect(() => {
-    if (!username) {
-      setSolved(null)
-      return
+  const fetcher = React.useCallback(async () => {
+    if (!username) throw new Error('no username')
+    const res = await fetch(
+      `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
+    )
+    const data = await res.json()
+    if (data.status !== 'OK') {
+      throw new Error('failed')
     }
-    const fetchSolved = async () => {
-      try {
-        setLoading(true)
-        const res = await fetch(
-          `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
-        )
-        const data = await res.json()
-        if (data.status !== 'OK') {
-          setSolved(null)
-          return
-        }
-        const setProblems = new Set<string>()
-        for (const sub of data.result) {
-          if (sub.verdict === 'OK') {
-            setProblems.add(`${sub.problem.contestId}-${sub.problem.index}`)
-          }
-        }
-        setSolved(setProblems.size)
-      } catch {
-        setSolved(null)
-      } finally {
-        setLoading(false)
+    const setProblems = new Set<string>()
+    for (const sub of data.result) {
+      if (sub.verdict === 'OK') {
+        setProblems.add(`${sub.problem.contestId}-${sub.problem.index}`)
       }
     }
-    fetchSolved()
+    return setProblems.size
   }, [username])
+
+  const { data: solved, loading } = useCachedFetch<number>(
+    `cf-solved-${username}`,
+    fetcher,
+    { ttl: 30 * 1000, retries: 3 },
+  )
 
   return (
     <Card className="w-[300px] h-full bg-secondary transition-all duration-300 hover:border-primary hover:shadow-md">

@@ -18,6 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Loader2 } from 'lucide-react'
+import { useCachedFetch } from '@/lib/useCachedFetch'
 
 interface Props {
   username: string
@@ -28,42 +29,39 @@ interface ActivityMap {
 }
 
 export function CodeforcesActivityHeatmap({ username }: Props) {
-  const [activity, setActivity] = React.useState<ActivityMap>({})
-  const [years, setYears] = React.useState<number[]>([])
   const [selectedYear, setSelectedYear] = React.useState<number>(
     new Date().getFullYear(),
   )
-  const [loading, setLoading] = React.useState(false)
 
-  React.useEffect(() => {
-    if (!username) return
-    const fetchData = async () => {
-      setLoading(true)
-      try {
-        const res = await fetch(
-          `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
-        )
-        const json = await res.json()
-        if (json.status !== 'OK') return
-        const map: ActivityMap = {}
-        const yearSet = new Set<number>()
-        for (const sub of json.result) {
-          if (sub.verdict !== 'OK') continue
-          const date = new Date(sub.creationTimeSeconds * 1000)
-          const day = date.toISOString().split('T')[0]
-          const year = date.getFullYear()
-          yearSet.add(year)
-          map[day] = (map[day] || 0) + 1
-        }
-        const yearArr = Array.from(yearSet).sort((a, b) => b - a)
-        setYears(yearArr)
-        setActivity(map)
-      } finally {
-        setLoading(false)
-      }
+  const fetcher = React.useCallback(async () => {
+    if (!username) throw new Error('no username')
+    const res = await fetch(
+      `https://codeforces.com/api/user.status?handle=${username}&from=1&count=100000`,
+    )
+    const json = await res.json()
+    if (json.status !== 'OK') throw new Error('failed')
+    const map: ActivityMap = {}
+    const yearSet = new Set<number>()
+    for (const sub of json.result) {
+      if (sub.verdict !== 'OK') continue
+      const date = new Date(sub.creationTimeSeconds * 1000)
+      const day = date.toISOString().split('T')[0]
+      const year = date.getFullYear()
+      yearSet.add(year)
+      map[day] = (map[day] || 0) + 1
     }
-    fetchData()
+    const years = Array.from(yearSet).sort((a, b) => b - a)
+    return { activity: map, years }
   }, [username])
+
+  const { data, loading } = useCachedFetch<{ activity: ActivityMap; years: number[] }>(
+    `cf-activity-${username}`,
+    fetcher,
+    { ttl: 30 * 1000, retries: 3 },
+  )
+
+  const activity = data?.activity ?? {}
+  const years = data?.years ?? []
 
   const year = selectedYear
   const startDate = new Date(year, 0, 1)
