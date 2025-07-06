@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { CodeforcesWidgets } from './codeforces-widgets'
 import { AtcoderWidgets } from './atcoder-widgets'
-import { LeetCodeWidgets } from './leetcode-widgets'
+// import { LeetCodeWidgets } from './leetcode-widgets'
 
 const platforms = ['codeforces', 'atcoder', 'leetcode'] as const
 
@@ -17,7 +17,7 @@ export function CompetitiveTabs() {
 
   const [inputs, setInputs] = React.useState<Record<string, string>>({
     codeforces: 'monoidic',
-    atcoder: 'monoidic',
+    atcoder: 'shiinamashiro_',
     leetcode: 'monoidic',
   })
   const [usernames, setUsernames] = React.useState<Record<string, string>>(inputs)
@@ -36,7 +36,7 @@ export function CompetitiveTabs() {
         <TabsList>
           <TabsTrigger value="codeforces">Codeforces</TabsTrigger>
           <TabsTrigger value="atcoder">AtCoder</TabsTrigger>
-          <TabsTrigger value="leetcode">LeetCode</TabsTrigger>
+          {/* <TabsTrigger value="leetcode">LeetCode</TabsTrigger> */}
         </TabsList>
         <div className="flex space-x-2">
           <Input
@@ -56,9 +56,9 @@ export function CompetitiveTabs() {
       <TabsContent value="atcoder">
         <AtcoderWidgets username={usernames.atcoder} />
       </TabsContent>
-      <TabsContent value="leetcode">
+      {/* <TabsContent value="leetcode">
         <LeetCodeWidgets username={usernames.leetcode} />
-      </TabsContent>
+      </TabsContent> */}
     </Tabs>
   )
 }
