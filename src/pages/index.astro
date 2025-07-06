@@ -1,12 +1,12 @@
 ---
 import PageHead from '@/components/PageHead.astro'
-import { CodeforcesWidgets } from '@/components/seraph/codeforces-widgets'
+import { CompetitiveTabs } from '@/components/seraph/competitive-tabs'
 import Layout from '@/layouts/Layout.astro'
 ---
 
 <Layout class="max-w-screen-xl">
   <PageHead slot="head" title="Home" />
   <div class="flex justify-center">
-    <CodeforcesWidgets client:load />
+    <CompetitiveTabs client:load />
   </div>
 </Layout>

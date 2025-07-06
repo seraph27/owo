@@ -1,0 +1,24 @@
+---
+title: 'Building my own productivity tool'
+description: ''
+date: '2025-7-04'
+tags: ['competitive programming', 'c++', 'codeforces']
+image: './bg.jpg'
+hidden: true
+authors: ['seraph']
+---
+
+### Commands that I should not forget
+This builds the project (also cleans the build directory)
+```bash
+# From your project root:
+rm -rf build
+mkdir build && cd build
+
+# 1. Configure (this creates CMakeCache.txt)
+cmake -S .. -B .
+
+# 2. Build (clean-first + 4-way parallel)
+cmake --build . --clean-first -- -j4
+```
+
