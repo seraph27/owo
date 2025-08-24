@@ -11,6 +11,17 @@ interface Props {
 }
 
 export function CodeforcesWidgets({ username }: Props) {
+  // Don't render if no username
+  if (!username || username.trim() === '') {
+    return (
+      <div className="space-y-2">
+        <div className="text-center text-muted-foreground p-8">
+          Please enter a Codeforces username and click Fetch
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
       <div className="grid w-full max-w-6xl gap-2 grid-cols-1 lg:grid-cols-[1fr_3fr] mx-auto">

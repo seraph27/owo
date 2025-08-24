@@ -46,7 +46,7 @@
     "remark-math": "^6.0.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.2"
   },
   "devDependencies": {
     "@types/recharts": "^2.0.1",
