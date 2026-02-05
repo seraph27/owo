@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { CodeforcesWidgets } from './codeforces-widgets'
 
 export function CompetitiveTabs() {
-  const [username, setUsername] = React.useState<string>('monoidic')
-  const [inputValue, setInputValue] = React.useState<string>('monoidic')
+  const [username, setUsername] = React.useState<string>('miguel')
+  const [inputValue, setInputValue] = React.useState<string>('miguel')
 
   const handleSubmit = () => {
     const newUsername = inputValue.trim()
